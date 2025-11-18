@@ -1,4 +1,6 @@
 import { useMemo, useEffect, useState } from 'react'
+import Tilt from './Tilt'
+import { motion } from 'framer-motion'
 
 function Countdown({ date }) {
   const target = useMemo(() => new Date(date), [date])
@@ -29,7 +31,7 @@ function EventCard({ event, onGetTickets }) {
   }
 
   return (
-    <div className="group relative bg-black border border-white/10 rounded-xl p-5 hover:border-white/25 transition-colors overflow-hidden">
+    <Tilt className="group relative bg-black border border-white/10 rounded-xl p-5 hover:border-white/25 transition-colors overflow-hidden">
       {/* festive ribbon */}
       {isXmas(event.date) && (
         <div className="pointer-events-none absolute -right-10 -top-3 rotate-45 bg-white/10 border border-white/20 text-white text-xs tracking-widest uppercase px-16 py-1">
@@ -52,12 +54,14 @@ function EventCard({ event, onGetTickets }) {
             <div className="text-lg font-mono"><Countdown date={event.date} /></div>
           </div>
 
-          <button
+          <motion.button
             onClick={() => onGetTickets(event)}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.97 }}
             className="inline-flex items-center gap-2 bg-white text-black px-4 py-2 rounded-full font-medium hover:bg-white/90 transition-colors"
           >
             Get Tickets 🎁
-          </button>
+          </motion.button>
         </div>
       </div>
 
@@ -65,7 +69,7 @@ function EventCard({ event, onGetTickets }) {
       <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{
         backgroundImage: 'repeating-linear-gradient(45deg, rgba(255,255,255,0.08) 0 8px, transparent 8px 16px)'
       }} />
-    </div>
+    </Tilt>
   )
 }
 
