@@ -30,15 +30,15 @@ function App() {
 
       <section id="events" className="max-w-5xl mx-auto px-6 sm:px-8 py-12">
         <div className="flex items-end justify-between mb-6">
-          <h2 className="text-2xl sm:text-3xl font-semibold">Today’s Events</h2>
+          <h2 className="text-2xl sm:text-3xl font-semibold">Tonight’s Lineup — 12 Nights of Christmas Bonannza</h2>
           <a href="/test" className="text-xs uppercase tracking-widest text-white/50 hover:text-white/80">Status</a>
         </div>
 
         {loading ? (
           <p className="text-white/60">Loading...</p>
         ) : events.length === 0 ? (
-          <div className="border border-white/10 rounded-xl p-8 text-white/60">
-            No events for today yet. Add some via the API.
+          <div className="border border-white/10 rounded-xl p-8 text-white/70">
+            No events yet for tonight. Add some via the API.
           </div>
         ) : (
           <div className="space-y-4">
@@ -53,7 +53,7 @@ function App() {
 
       <footer className="border-t border-white/10 py-10 mt-8">
         <div className="max-w-5xl mx-auto px-6 sm:px-8 flex items-center justify-between text-white/50 text-sm">
-          <p>Events — Minimal Black & White</p>
+          <p>12 Nights of Christmas Bonannza</p>
           <p>© {new Date().getFullYear()}</p>
         </div>
       </footer>

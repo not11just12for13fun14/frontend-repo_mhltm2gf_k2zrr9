@@ -22,6 +22,20 @@
   }
 }
 
+/* Snow effect */
+@keyframes snowfall {
+  0% { transform: translateY(-10%); }
+  100% { transform: translateY(110%); }
+}
+
+.snow {
+  background-image: radial-gradient(white 1px, transparent 1px), radial-gradient(white 1px, transparent 1px);
+  background-size: 3px 3px, 2px 2px;
+  background-position: 0 0, 1px 1px;
+  animation: snowfall 18s linear infinite;
+  mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
+}
+
 /* Custom utility classes for shadcn/ui patterns */
 @layer utilities {
   .animate-in {

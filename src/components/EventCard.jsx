@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useEffect, useState } from 'react'
 
 function Countdown({ date }) {
   const target = useMemo(() => new Date(date), [date])
@@ -10,28 +10,39 @@ function Countdown({ date }) {
   }, [])
 
   const diff = Math.max(0, target.getTime() - now)
-  const hours = Math.floor(diff / (1000 * 60 * 60))
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
   const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
   const seconds = Math.floor((diff % (1000 * 60)) / 1000)
 
   return (
     <span className="tabular-nums">
-      {String(hours).padStart(2, '0')}:{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
+      {days > 0 ? `${String(days).padStart(2, '0')}:` : ''}{String(hours).padStart(2, '0')}:{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
     </span>
   )
 }
 
-import { useEffect, useState } from 'react'
-
 function EventCard({ event, onGetTickets }) {
+  const isXmas = (d) => {
+    const dt = new Date(d)
+    return dt.getMonth() === 11 && dt.getDate() >= 1 && dt.getDate() <= 31
+  }
+
   return (
-    <div className="group relative bg-black border border-white/10 rounded-xl p-5 hover:border-white/25 transition-colors">
+    <div className="group relative bg-black border border-white/10 rounded-xl p-5 hover:border-white/25 transition-colors overflow-hidden">
+      {/* festive ribbon */}
+      {isXmas(event.date) && (
+        <div className="pointer-events-none absolute -right-10 -top-3 rotate-45 bg-white/10 border border-white/20 text-white text-xs tracking-widest uppercase px-16 py-1">
+          Christmas
+        </div>
+      )}
+
       <div className="flex flex-col sm:flex-row sm:items-center gap-4">
         <div className="flex-1">
-          <h3 className="text-xl font-medium text-white">{event.title}</h3>
-          <p className="text-sm text-white/60 mt-1">{new Date(event.date).toLocaleString()}</p>
+          <h3 className="text-xl font-semibold text-white">{event.title}</h3>
+          <p className="text-sm text-white/70 mt-1">{new Date(event.date).toLocaleString()}</p>
           {event.venue && (
-            <p className="text-sm text-white/50">{event.venue}{event.city ? `, ${event.city}` : ''}</p>
+            <p className="text-sm text-white/60">{event.venue}{event.city ? `, ${event.city}` : ''}</p>
           )}
         </div>
 
@@ -45,10 +56,15 @@ function EventCard({ event, onGetTickets }) {
             onClick={() => onGetTickets(event)}
             className="inline-flex items-center gap-2 bg-white text-black px-4 py-2 rounded-full font-medium hover:bg-white/90 transition-colors"
           >
-            Get Tickets
+            Get Tickets 🎁
           </button>
         </div>
       </div>
+
+      {/* subtle candy-cane border on hover */}
+      <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{
+        backgroundImage: 'repeating-linear-gradient(45deg, rgba(255,255,255,0.08) 0 8px, transparent 8px 16px)'
+      }} />
     </div>
   )
 }
