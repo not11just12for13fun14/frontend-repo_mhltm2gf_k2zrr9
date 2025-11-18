@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react'
 import Hero from './components/Hero'
 import EventCard from './components/EventCard'
 import TicketModal from './components/TicketModal'
+import EventDetails from './components/EventDetails'
 
 function App() {
   const [events, setEvents] = useState([])
   const [loading, setLoading] = useState(true)
   const [selected, setSelected] = useState(null)
+  const [details, setDetails] = useState(null)
   const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000'
 
   useEffect(() => {
@@ -43,13 +45,14 @@ function App() {
         ) : (
           <div className="space-y-4">
             {events.map(ev => (
-              <EventCard key={ev.id} event={ev} onGetTickets={(e)=>setSelected(e)} />
+              <EventCard key={ev.id} event={ev} onGetTickets={(e)=>setSelected(e)} onSeeDetails={(e)=>setDetails(e)} />
             ))}
           </div>
         )}
       </section>
 
       <TicketModal open={!!selected} onClose={()=>setSelected(null)} event={selected || {}} />
+      <EventDetails open={!!details} onClose={()=>setDetails(null)} event={details || null} onGetTickets={(e)=>{setDetails(null); setSelected(e)}} />
 
       <footer className="border-t border-white/10 py-10 mt-8">
         <div className="max-w-5xl mx-auto px-6 sm:px-8 flex items-center justify-between text-white/50 text-sm">
