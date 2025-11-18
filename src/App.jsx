@@ -1,71 +1,62 @@
+import { useEffect, useState } from 'react'
+import Hero from './components/Hero'
+import EventCard from './components/EventCard'
+import TicketModal from './components/TicketModal'
+
 function App() {
+  const [events, setEvents] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [selected, setSelected] = useState(null)
+  const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000'
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const res = await fetch(`${baseUrl}/api/events/today`)
+        const data = await res.json()
+        setEvents(Array.isArray(data) ? data : [])
+      } catch (e) {
+        console.error(e)
+      } finally {
+        setLoading(false)
+      }
+    }
+    load()
+  }, [])
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      {/* Subtle pattern overlay */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.05),transparent_50%)]"></div>
+    <div className="min-h-screen bg-black text-white">
+      <Hero />
 
-      <div className="relative min-h-screen flex items-center justify-center p-8">
-        <div className="max-w-2xl w-full">
-          {/* Header with Flames icon */}
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center justify-center mb-6">
-              <img
-                src="/flame-icon.svg"
-                alt="Flames"
-                className="w-24 h-24 drop-shadow-[0_0_25px_rgba(59,130,246,0.5)]"
-              />
-            </div>
-
-            <h1 className="text-5xl font-bold text-white mb-4 tracking-tight">
-              Flames Blue
-            </h1>
-
-            <p className="text-xl text-blue-200 mb-6">
-              Build applications through conversation
-            </p>
-          </div>
-
-          {/* Instructions */}
-          <div className="bg-slate-800/50 backdrop-blur-sm border border-blue-500/20 rounded-2xl p-8 shadow-xl mb-6">
-            <div className="flex items-start gap-4 mb-6">
-              <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-lg flex items-center justify-center font-bold">
-                1
-              </div>
-              <div>
-                <h3 className="font-semibold text-white mb-1">Describe your idea</h3>
-                <p className="text-blue-200/80 text-sm">Use the chat panel on the left to tell the AI what you want to build</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4 mb-6">
-              <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-lg flex items-center justify-center font-bold">
-                2
-              </div>
-              <div>
-                <h3 className="font-semibold text-white mb-1">Watch it build</h3>
-                <p className="text-blue-200/80 text-sm">Your app will appear in this preview as the AI generates the code</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-lg flex items-center justify-center font-bold">
-                3
-              </div>
-              <div>
-                <h3 className="font-semibold text-white mb-1">Refine and iterate</h3>
-                <p className="text-blue-200/80 text-sm">Continue the conversation to add features and make changes</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Footer */}
-          <div className="text-center">
-            <p className="text-sm text-blue-300/60">
-              No coding required • Just describe what you want
-            </p>
-          </div>
+      <section id="events" className="max-w-5xl mx-auto px-6 sm:px-8 py-12">
+        <div className="flex items-end justify-between mb-6">
+          <h2 className="text-2xl sm:text-3xl font-semibold">Today’s Events</h2>
+          <a href="/test" className="text-xs uppercase tracking-widest text-white/50 hover:text-white/80">Status</a>
         </div>
-      </div>
+
+        {loading ? (
+          <p className="text-white/60">Loading...</p>
+        ) : events.length === 0 ? (
+          <div className="border border-white/10 rounded-xl p-8 text-white/60">
+            No events for today yet. Add some via the API.
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {events.map(ev => (
+              <EventCard key={ev.id} event={ev} onGetTickets={(e)=>setSelected(e)} />
+            ))}
+          </div>
+        )}
+      </section>
+
+      <TicketModal open={!!selected} onClose={()=>setSelected(null)} event={selected || {}} />
+
+      <footer className="border-t border-white/10 py-10 mt-8">
+        <div className="max-w-5xl mx-auto px-6 sm:px-8 flex items-center justify-between text-white/50 text-sm">
+          <p>Events — Minimal Black & White</p>
+          <p>© {new Date().getFullYear()}</p>
+        </div>
+      </footer>
     </div>
   )
 }
